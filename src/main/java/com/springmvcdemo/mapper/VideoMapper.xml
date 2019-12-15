@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springmvcdemo.mapper.VideoMapper">
+	<resultMap id="BaseResultMap" type="com.springmvcdemo.pojo.Video">
+		<id column="id" jdbcType="VARCHAR" property="id"/>
+		<result column="name" jdbcType="VARCHAR" property="name"/>
+		<result column="p_name" jdbcType="VARCHAR" property="pName"/>
+		<result column="size" jdbcType="BIGINT" property="size"/>
+		<result column="rate20" jdbcType="REAL" property="rate20"/>
+		<result column="path" jdbcType="VARCHAR" property="path"/>
+		<result column="file_type" jdbcType="VARCHAR" property="fileType"/>
+		<result column="len" jdbcType="INTEGER" property="len"/>
+		<result column="h" jdbcType="INTEGER" property="h"/>
+		<result column="w" jdbcType="INTEGER" property="w"/>
+		<result column="fps" jdbcType="REAL" property="fps"/>
+		<result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+		<result column="target_name" jdbcType="VARCHAR" property="targetName"/>
+		<result column="sub_group" jdbcType="VARCHAR" property="subGroup"/>
+		<result column="md5" jdbcType="VARCHAR" property="md5"/>
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		id, name, p_name, size, rate20,
+		replace (path,"X:","") as path, file_type, len, h, w, fps, file_name, target_name,
+    sub_group, md5
+	</sql>
+	<select id="selectByExample" parameterType="com.springmvcdemo.pojo.VideoExample" resultMap="BaseResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List"/>
+		from video
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+		<if test="limmitClause != null">
+			limit ${limmitClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from video where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete
+		from video
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.springmvcdemo.pojo.VideoExample">
+		delete from video
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.springmvcdemo.pojo.Video">
+		insert into video (id, name, p_name,
+						   size, rate20, path, file_type,
+						   len, h, w, fps,
+						   file_name, target_name, sub_group,
+						   md5)
+		values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR},
+				#{size,jdbcType=BIGINT}, #{rate20,jdbcType=REAL}, #{path,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR},
+				#{len,jdbcType=INTEGER}, #{h,jdbcType=INTEGER}, #{w,jdbcType=INTEGER}, #{fps,jdbcType=REAL},
+				#{fileName,jdbcType=VARCHAR}, #{targetName,jdbcType=VARCHAR}, #{subGroup,jdbcType=VARCHAR},
+				#{md5,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.springmvcdemo.pojo.Video">
+		insert into video
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="pName != null">
+				p_name,
+			</if>
+			<if test="size != null">
+				size,
+			</if>
+			<if test="rate20 != null">
+				rate20,
+			</if>
+			<if test="path != null">
+				path,
+			</if>
+			<if test="fileType != null">
+				file_type,
+			</if>
+			<if test="len != null">
+				len,
+			</if>
+			<if test="h != null">
+				h,
+			</if>
+			<if test="w != null">
+				w,
+			</if>
+			<if test="fps != null">
+				fps,
+			</if>
+			<if test="fileName != null">
+				file_name,
+			</if>
+			<if test="targetName != null">
+				target_name,
+			</if>
+			<if test="subGroup != null">
+				sub_group,
+			</if>
+			<if test="md5 != null">
+				md5,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pName != null">
+				#{pName,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				#{size,jdbcType=BIGINT},
+			</if>
+			<if test="rate20 != null">
+				#{rate20,jdbcType=REAL},
+			</if>
+			<if test="path != null">
+				#{path,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				#{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="len != null">
+				#{len,jdbcType=INTEGER},
+			</if>
+			<if test="h != null">
+				#{h,jdbcType=INTEGER},
+			</if>
+			<if test="w != null">
+				#{w,jdbcType=INTEGER},
+			</if>
+			<if test="fps != null">
+				#{fps,jdbcType=REAL},
+			</if>
+			<if test="fileName != null">
+				#{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="targetName != null">
+				#{targetName,jdbcType=VARCHAR},
+			</if>
+			<if test="subGroup != null">
+				#{subGroup,jdbcType=VARCHAR},
+			</if>
+			<if test="md5 != null">
+				#{md5,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.springmvcdemo.pojo.VideoExample" resultType="java.lang.Long">
+		select count(*) from video
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update video
+		<set>
+			<if test="record.id != null">
+				id = #{record.id,jdbcType=VARCHAR},
+			</if>
+			<if test="record.name != null">
+				name = #{record.name,jdbcType=VARCHAR},
+			</if>
+			<if test="record.pName != null">
+				p_name = #{record.pName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.size != null">
+				size = #{record.size,jdbcType=BIGINT},
+			</if>
+			<if test="record.rate20 != null">
+				rate20 = #{record.rate20,jdbcType=REAL},
+			</if>
+			<if test="record.path != null">
+				path = #{record.path,jdbcType=VARCHAR},
+			</if>
+			<if test="record.fileType != null">
+				file_type = #{record.fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="record.len != null">
+				len = #{record.len,jdbcType=INTEGER},
+			</if>
+			<if test="record.h != null">
+				h = #{record.h,jdbcType=INTEGER},
+			</if>
+			<if test="record.w != null">
+				w = #{record.w,jdbcType=INTEGER},
+			</if>
+			<if test="record.fps != null">
+				fps = #{record.fps,jdbcType=REAL},
+			</if>
+			<if test="record.fileName != null">
+				file_name = #{record.fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.targetName != null">
+				target_name = #{record.targetName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.subGroup != null">
+				sub_group = #{record.subGroup,jdbcType=VARCHAR},
+			</if>
+			<if test="record.md5 != null">
+				md5 = #{record.md5,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause"/>
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update video set id = #{record.id,jdbcType=VARCHAR}, name = #{record.name,jdbcType=VARCHAR}, p_name = #{record.pName,jdbcType=VARCHAR}, size =
+		#{record.size,jdbcType=BIGINT}, rate20 = #{record.rate20,jdbcType=REAL}, path = #{record.path,jdbcType=VARCHAR}, file_type =
+		#{record.fileType,jdbcType=VARCHAR}, len = #{record.len,jdbcType=INTEGER}, h = #{record.h,jdbcType=INTEGER}, w = #{record.w,jdbcType=INTEGER},
+		fps = #{record.fps,jdbcType=REAL}, file_name = #{record.fileName,jdbcType=VARCHAR}, target_name = #{record.targetName,jdbcType=VARCHAR},
+		sub_group = #{record.subGroup,jdbcType=VARCHAR}, md5 = #{record.md5,jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause"/>
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.springmvcdemo.pojo.Video">
+		update video
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pName != null">
+				p_name = #{pName,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				size = #{size,jdbcType=BIGINT},
+			</if>
+			<if test="rate20 != null">
+				rate20 = #{rate20,jdbcType=REAL},
+			</if>
+			<if test="path != null">
+				path = #{path,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				file_type = #{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="len != null">
+				len = #{len,jdbcType=INTEGER},
+			</if>
+			<if test="h != null">
+				h = #{h,jdbcType=INTEGER},
+			</if>
+			<if test="w != null">
+				w = #{w,jdbcType=INTEGER},
+			</if>
+			<if test="fps != null">
+				fps = #{fps,jdbcType=REAL},
+			</if>
+			<if test="fileName != null">
+				file_name = #{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="targetName != null">
+				target_name = #{targetName,jdbcType=VARCHAR},
+			</if>
+			<if test="subGroup != null">
+				sub_group = #{subGroup,jdbcType=VARCHAR},
+			</if>
+			<if test="md5 != null">
+				md5 = #{md5,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.springmvcdemo.pojo.Video">
+		update video
+		set name        = #{name,jdbcType=VARCHAR},
+			p_name      = #{pName,jdbcType=VARCHAR},
+			size        = #{size,jdbcType=BIGINT},
+			rate20      = #{rate20,jdbcType=REAL},
+			path        = #{path,jdbcType=VARCHAR},
+			file_type   = #{fileType,jdbcType=VARCHAR},
+			len         = #{len,jdbcType=INTEGER},
+			h           = #{h,jdbcType=INTEGER},
+			w           = #{w,jdbcType=INTEGER},
+			fps         = #{fps,jdbcType=REAL},
+			file_name   = #{fileName,jdbcType=VARCHAR},
+			target_name = #{targetName,jdbcType=VARCHAR},
+			sub_group   = #{subGroup,jdbcType=VARCHAR},
+			md5         = #{md5,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

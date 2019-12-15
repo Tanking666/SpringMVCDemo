@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.alibaba.com/schema/stat"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd" default-autowire="byName">
+
+	<context:component-scan base-package="com.springmvcdemo.controller">
+		<!--排除-->
+<!--		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+	</context:component-scan>
+	<context:component-scan base-package="com.springmvcdemo.pojo"/>
+	<context:component-scan base-package="com.springmvcdemo.mapper"/>
+	<context:component-scan base-package="com.springmvcdemo.system.*"/>
+	<context:component-scan base-package="com.springmvcdemo.service.*"/>
+	<!--	<context:component-scan base-package="com.springmvcdemo.controller"/>-->
+	<!--	<context:component-scan base-package="com.springmvcdemo.controller"/>-->
+
+	<!--引入配置-->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+
+	<!--***切面类-->
+	<!--<bean id="myAspectByXml" class="com.my.spring.demo1.MyAspectXml"/>-->
+	<!--<bean id="myAspectByAnno" class="com.my.spring.demo1.MyAspectAnno"/>-->
+	<!--开启AOP注解开发-->
+	<!--<aop:aspectj-autoproxy/>-->
+	<!--aop配置-->
+	<!--<aop:config>-->
+	<!--表达式配置需要增强方法-->
+	<!--<aop:pointcut id="pointCut1" expression="execution(* com.my.spring.demo1.service.impl.carServiceImpl.save(..))"/>-->
+	<!--配置切面-->
+	<!--<aop:aspect ref="myAspectByXml">-->
+	<!--<aop:before method="checkPri" pointcut-ref="pointCut1"/>-->
+	<!--</aop:aspect>-->
+	<!--</aop:config>-->
+
+
+	<!--***数据库连接部分-->
+	<!--Spring内置连接池-->
+	<!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+	<!--<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
+	<!--<property name="url" value="${mysql.url}"/>-->
+	<!--<property name="username" value="${mysql.username}"/>-->
+	<!--<property name="password" value="${mysql.password}"/>-->
+	<!--</bean>-->
+	<!--老马连接池-->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="driverClassName" value="${mysql.driver}"/>
+		<property name="url" value="${mysql.url}"/>
+		<property name="username" value="${mysql.username}"/>
+		<property name="password" value="${mysql.password}"/>
+		<!--最大连接数-->
+		<property name="maxActive" value="10"/>
+		<!--最大空闲数-->
+		<!--兼容用已废弃-->
+		<!--<property name="maxIdle" value="5"/>-->
+		<property name="minIdle" value="5"/>
+	</bean>
+	<!--配置Spring JDBC模板-->
+	<!--	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">-->
+	<!--		<property name="dataSource" ref="dataSource"/>-->
+	<!--	</bean>-->
+	<!--MyBatis配置-->
+	<!--不加id默认sqlSessionFactoryBean-->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--加载Mybatis-->
+		<property name="configLocation" value="classpath:SqlMapConfig.xml"/>
+		<!--数据源-->
+		<property name="dataSource" ref="dataSource"/>
+		<!--别名-->
+		<property name="typeAliasesPackage" value="com.springmvcdemo.pojo"/>
+	</bean>
+
+	<!--传统DAO配置-->
+	<!--	<bean id="UserDaoImpl" class="com.springMybatis.dao.Impl.UserDaoImpl">-->
+	<!--		<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"/>-->
+	<!--	</bean>-->
+
+	<!--动态代理配置方式-->
+	<bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" abstract="true" lazy-init="true">
+		<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"/>
+	</bean>
+	<!--配置一个接口-->
+	<!--	<bean parent="baseMapper">-->
+	<!--		<property name="mapperInterface" value="com.springMybatis.mapper.UserMapper"/>-->
+	<!--	</bean>-->
+
+	<!--包扫描-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.springmvcdemo.mapper"/>
+	</bean>
+
+	<!--处理器映射器-->
+	<!--	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>-->
+	<!--处理器适配器 实例化被访问类 调度注解方法-->
+	<!--	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>-->
+	<!--配置注解驱动 使用最新映射器和驱动器 对json 提供支持-->
+	<mvc:annotation-driven/>
+
+	<!-- 默认的视图解析器 在上边的解析错误时使用 (默认使用html)- -->
+	<bean id="defaultViewResolver"
+		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+				  value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="contentType" value="text/html"/>
+		<property name="prefix" value="/webpage/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+
+</beans>
